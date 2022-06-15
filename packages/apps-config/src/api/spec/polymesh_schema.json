@@ -1,0 +1,12 @@
+{
+  "types": {
+    "BTreeSet<Bytes>": "Vec<Bytes>",
+    "BTreeSet<PolymeshPrimitivesStatisticsStatUpdate>": "Vec<PolymeshPrimitivesStatisticsStatUpdate>",
+    "BTreeSet<PolymeshPrimitivesStatisticsStatType>": "Vec<PolymeshPrimitivesStatisticsStatType>",
+    "BTreeSet<PolymeshPrimitivesTransferComplianceTransferCondition>": "Vec<PolymeshPrimitivesTransferComplianceTransferCondition>",
+    "BTreeSet<PolymeshPrimitivesIdentityId>": "Vec<PolymeshPrimitivesIdentityId>",
+    "BTreeSet<PolymeshPrimitivesTicker>": "Vec<PolymeshPrimitivesTicker>",
+    "BTreeSet<PolymeshPrimitivesSecondaryKeyPalletPermissions>": "Vec<PolymeshPrimitivesSecondaryKeyPalletPermissions>",
+    "BTreeSet<PolymeshPrimitivesIdentityIdPortfolioId>": "Vec<PolymeshPrimitivesIdentityIdPortfolioId>"
+  }
+}
