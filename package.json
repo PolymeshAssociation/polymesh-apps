@@ -56,13 +56,20 @@
     "test": "polkadot-dev-run-test --runInBand --testPathIgnorePatterns slow --testNamePattern='^((?!--SLOW--).)*$'",
     "test:all": "polkadot-dev-run-test --runInBand --config ./jest-slow.config.cjs",
     "test:one": "polkadot-dev-run-test",
-    "test:skipped": "echo 'tests skipped'"
+    "test:skipped": "echo 'tests skipped'",
+    "wrangler:build": "yarn run build:www && cd packages/apps && npx wrangler build",
+    "wrangler:preview": "yarn run build:www && cd packages/apps && npx wrangler preview",
+    "wrangler:staging:publish": "yarn run build:www && cd packages/apps && npx wrangler publish --env staging",
+    "wrangler:testnet:publish": "yarn run build:www && cd packages/apps && npx wrangler publish --env testnet",
+    "wrangler:mainnet:publish": "yarn run build:www && cd packages/apps && npx wrangler publish --env mainnet"
+
   },
   "devDependencies": {
     "@babel/core": "^7.18.5",
     "@babel/register": "^7.17.7",
     "@babel/runtime": "^7.18.3",
     "@crustio/crust-pin": "^1.0.0",
+    "@cloudflare/wrangler": "^1.10.3",
     "@pinata/sdk": "^1.1.26",
     "@polkadot/dev": "^0.67.3",
     "@types/chart.js": "^2.9.37",
