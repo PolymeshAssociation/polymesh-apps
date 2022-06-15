@@ -26,7 +26,7 @@ function extractEventDetails (events?: KeyedEvent[]): [BN?, BN?, BN?] {
         ? deposits.iadd(data[1] as Balance)
         : deposits,
       section === 'balances' && method === 'Transfer'
-        ? transfers.iadd(data[2] as Balance)
+        ? transfers.iadd(data[4] as Balance)
         : transfers,
       section === 'system' && ['ExtrinsicFailed', 'ExtrinsicSuccess'].includes(method)
         ? weight.iadd(((method === 'ExtrinsicSuccess' ? data[0] : data[1]) as DispatchInfo).weight)

@@ -26,7 +26,6 @@ import Address from './Address';
 import Qr from './Qr';
 import { AccountSigner, LedgerSigner, QrSigner } from './signers';
 import SignFields from './SignFields';
-import Tip from './Tip';
 import Transaction from './Transaction';
 import { useTranslation } from './translate';
 import { cacheUnlock, extractExternal, handleTxResults } from './util';
@@ -197,7 +196,7 @@ function TxSigned ({ className, currentItem, requestAddress }: Props): React.Rea
   const [signedOptions, setSignedOptions] = useState<Partial<SignerOptions>>({});
   const [signedTx, setSignedTx] = useState<string | null>(null);
   const [{ innerHash, innerTx }, setCallInfo] = useState<InnerTx>(EMPTY_INNER);
-  const [tip, setTip] = useState(BN_ZERO);
+  const [tip] = useState(BN_ZERO);
 
   useEffect((): void => {
     setFlags(tryExtract(senderInfo.signAddress));
@@ -367,9 +366,6 @@ function TxSigned ({ className, currentItem, requestAddress }: Props): React.Rea
                   passwordError={passwordError}
                   requestAddress={requestAddress}
                 />
-                {!currentItem.payload && (
-                  <Tip onChange={setTip} />
-                )}
                 {!isSubmit && (
                   <SignFields
                     address={senderInfo.signAddress}
