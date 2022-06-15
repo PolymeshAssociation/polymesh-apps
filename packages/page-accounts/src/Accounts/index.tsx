@@ -359,24 +359,6 @@ function Overview ({ className = '', onStatusChange }: Props): React.ReactElemen
               onClick={toggleLedger}
             />
           )}
-          {hasAccounts && (
-            <>
-              {hasPalletMultisig && (
-                <Button
-                  icon='plus'
-                  label={t<string>('Multisig')}
-                  onClick={toggleMultisig}
-                />
-              )}
-              {hasPalletProxy && (
-                <Button
-                  icon='plus'
-                  label={t<string>('Proxied')}
-                  onClick={toggleProxy}
-                />
-              )}
-            </>
-          )}
         </Button.Group>
       </SummaryBox>
       {!isNextTick || !sortedAccounts.length
