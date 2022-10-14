@@ -11,7 +11,7 @@ import { web3FromSource } from '@polkadot/extension-dapp';
 import { Button, Input, InputAddress, Output, Static } from '@polkadot/react-components';
 import { useToggle } from '@polkadot/react-hooks';
 import { keyring } from '@polkadot/ui-keyring';
-import { isFunction, isHex, u8aToHex, u8aWrapBytes } from '@polkadot/util';
+import { isFunction, isHex, u8aToHex, u8aToU8a } from '@polkadot/util';
 
 import { useTranslation } from './translate';
 import Unlock from './Unlock';
@@ -90,7 +90,7 @@ function Sign ({ className = '' }: Props): React.ReactElement<Props> {
         return;
       }
 
-      const wrapped = u8aWrapBytes(data);
+      const wrapped = u8aToU8a(data);
 
       if (signer && isFunction(signer.signRaw)) {
         setSignature('');
