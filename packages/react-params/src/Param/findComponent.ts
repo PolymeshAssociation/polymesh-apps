@@ -146,7 +146,7 @@ export default function findComponent (registry: Registry, def: TypeDef, overrid
       : null;
 
   const type = fromDef(def);
-  let Component = findOne(def.lookupName) || findOne(type);
+  let Component = findOne(def.typeName) || (findOne(def.lookupName) || findOne(type));
 
   if (!Component) {
     let error: string | null = null;
