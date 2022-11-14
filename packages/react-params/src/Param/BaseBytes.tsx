@@ -115,7 +115,7 @@ function BaseBytes ({ asHex, children, className = '', defaultValue: { value }, 
 
       setValidity({ isAddress, isValid, lastValue: value });
     },
-    [asHex, length, onChange, validate, withLength]
+    [asHex, length, onChange, validate, withLength, isInOption]
   );
 
   return (
