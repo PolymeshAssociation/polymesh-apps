@@ -15,9 +15,9 @@ import type { EndpointOption } from './types';
 export const chains: EndpointOption[] = [
   {
     info: 'polymesh',
-    text: 'Polymesh Staging',
+    text: '__APP_NAME__',
     providers: {
-      Polymath: 'wss://staging-rpc.polymesh.live'
+      Polymath: 'wss://__RPC_HOSTNAME__/'
     }
   }
 ];
