@@ -2,7 +2,7 @@ FROM ubuntu:18.04 as builder
 
 # Install any needed packages
 RUN apt-get update && \
-  apt-get install --no-install-recommends -y curl git gnupg ca-certificates python3 pkg-config make g++
+  apt-get install --no-install-recommends -y curl git gnupg ca-certificates python3 pkg-config make g++ libudev-dev cmake libusb-1.0-0-dev
 
 # install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
