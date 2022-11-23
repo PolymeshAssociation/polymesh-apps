@@ -14,7 +14,7 @@ RUN npm install yarn -g
 WORKDIR /apps
 COPY . .
 
-RUN yarn && NODE_ENV=production yarn build:www
+RUN yarn && NODE_ENV=production yarn build:www || find /tmp/ -type f -name "build.log" -exec cat '{}' \; && exit 1
 
 # ===========================================================
 FROM nginx:stable-alpine
