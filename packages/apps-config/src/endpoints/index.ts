@@ -5,8 +5,8 @@ import type { TFunction } from '../types';
 import type { LinkOption } from './types';
 
 import { defaultT } from '../util';
-import { createCustom, createDev, createOwn } from './development';
 import { chains } from './chains';
+import { createCustom, createDev, createOwn } from './development';
 import { expandEndpoints } from './util';
 
 export { CUSTOM_ENDPOINT_KEY } from './development';

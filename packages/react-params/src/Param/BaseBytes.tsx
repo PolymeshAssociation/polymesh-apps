@@ -8,7 +8,7 @@ import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { CopyButton, IdentityIcon, Input } from '@polkadot/react-components';
-import { compactAddLength, hexToU8a, isAscii, isHex, stringToU8a, u8aToHex, u8aToString, u8aToU8a, u8aConcat } from '@polkadot/util';
+import { compactAddLength, hexToU8a, isAscii, isHex, stringToU8a, u8aConcat, u8aToHex, u8aToString, u8aToU8a } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 
 import { useTranslation } from '../translate';
