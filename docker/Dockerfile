@@ -2,7 +2,7 @@ FROM ubuntu:18.04 as builder
 
 # Install any needed packages
 RUN apt-get update && \
-  apt-get install --no-install-recommends -y curl git gnupg ca-certificates python3 pkg-config make g++ libudev-dev cmake libusb-1.0-0-dev
+  apt-get install --no-install-recommends -y curl git gnupg ca-certificates python3 pkg-config make cmake g++ libudev-dev libusb-1.0-0-dev
 
 # install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
@@ -14,7 +14,7 @@ RUN npm install yarn -g
 WORKDIR /apps
 COPY . .
 
-RUN yarn && NODE_ENV=production yarn build:www || find /tmp/ -type f -name "build.log" -exec cat '{}' \; && exit 1
+RUN yarn && NODE_ENV=production yarn build:www
 
 # ===========================================================
 FROM nginx:stable-alpine
