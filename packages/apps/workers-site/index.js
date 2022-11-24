@@ -1,7 +1,7 @@
 // Copyright 2017-2022 @polkadot/apps authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler';
+import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
 /**
  * The DEBUG flag will do two things that help during development:
@@ -28,20 +28,14 @@ addEventListener('fetch', (event) => {
   }
 });
 
-async function handleEvent(event) {
+async function handleEvent (event) {
   const options = {};
-
-  /**
-   * You can add custom logic to how we fetch your assets
-   * by configuring the function `mapRequestToAsset`
-   */
-  // options.mapRequestToAsset = handlePrefix(/^\/docs/)
 
   try {
     if (DEBUG) {
       // customize caching
       options.cacheControl = {
-        bypassCache: true,
+        bypassCache: true
       };
     }
 
@@ -51,7 +45,7 @@ async function handleEvent(event) {
     if (!DEBUG) {
       try {
         const notFoundResponse = await getAssetFromKV(event, {
-          mapRequestToAsset: req => new Request(`${new URL(req.url).origin}/404.html`, req),
+          mapRequestToAsset: (req) => new Request(`${new URL(req.url).origin}/404.html`, req)
         });
 
         return new Response(notFoundResponse.body, { ...notFoundResponse, status: 404 });
