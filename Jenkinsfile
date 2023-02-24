@@ -25,7 +25,7 @@ node {
         }
 
         SCM_CHECKOUT_BRANCHES = [
-            
+
         ]
         SCM_CHECKOUT_EXTENSIONS = [
             [$class: 'UserIdentity',
@@ -34,11 +34,11 @@ node {
         ]
 
         if (IS_PULL_REQUEST) {
-            SCM_CHECKOUT_BRANCHES.push([name: "*/${env.CHANGE_TARGET}"])
+            //SCM_CHECKOUT_BRANCHES.push([name: "*/${env.CHANGE_TARGET}"])
             SCM_CHECKOUT_BRANCHES.push([name: "*/${env.CHANGE_BRANCH}"])
-            SCM_CHECKOUT_EXTENSIONS.push([$class: 'PreBuildMerge',
-                                           options: [mergeRemote: 'origin',
-                                                     mergeTarget: env.CHANGE_TARGET]])
+            //SCM_CHECKOUT_EXTENSIONS.push([$class: 'PreBuildMerge',
+            //                               options: [mergeRemote: 'origin',
+            //                                         mergeTarget: env.CHANGE_TARGET]])
         } else {
             SCM_CHECKOUT_BRANCHES.push([name: "*/${env.BRANCH_NAME}"])
         }
@@ -58,14 +58,6 @@ node {
 
         env.GIT_COMMIT = scm_variables.get('GIT_COMMIT')
         echo "GIT_COMMIT: ${env.GIT_COMMIT}"
-
-        //env.GIT_COMMIT = sh (
-        //    label: 'Read Git Commit',
-        //    script: "git log | head -1 | awk '{print \$2}'",
-        //    returnStdout: true,
-        //).trim()
-        //
-        //echo "GIT_COMMIT: ${env.GIT_COMMIT}"
 
         stage('Build') {
             sh (label: 'Run `./deploy/build.sh`',

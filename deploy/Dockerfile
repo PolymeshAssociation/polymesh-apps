@@ -1,79 +1,51 @@
-################################################################
+FROM ubuntu:18.04 as builder
 
-FROM node:16.17.1-bullseye-slim as builder
-
-################################################################
-
-RUN npm update -g npm && \
-    npm update -g yarn
-
-################################################################
-
+# Install any needed packages
 RUN apt-get update && \
-    apt-get install -y jq
+  apt-get install --no-install-recommends -y curl git gnupg ca-certificates python3 pkg-config make cmake g++ libudev-dev libusb-1.0-0-dev
 
-################################################################
+# install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install --no-install-recommends -y nodejs && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+RUN npm install yarn -g
 
-RUN mkdir -p /apps/.yarn/cache/ && \
-    mkdir -p /apps/node_modules/ && \
-    chown -R node:node /apps
-
-################################################################
-
-USER root
-RUN chown -R node:node /apps
-
-################################################################
-
-USER node
 WORKDIR /apps
+COPY . .
 
-################################################################
+RUN sed -n 's/^\(.*\)=.*$/\1=__\1__/p' .env-example > .env.production.local && \
+    echo 'APP_NAME=__APP_NAME__' >> .env.production.local && \
+    echo 'RPC_ENDPOINT=__RPC_ENDPOINT__' >> .env.production.local && \
+    cat .env.production.local | \
+        xargs -I{} bash -c "echo '{}' | sed 's/^\\(.*\\)=.*$/\\1/' >> /srv/env.var.list"
 
-#COPY --chown=node:node package.json ./
-#COPY --chown=node:node yarn.lock ./
-#RUN yarn install
-#COPY --chown=node:node . .
+RUN yarn && NODE_ENV=production yarn build:www
 
-################################################################
+# ===========================================================
+FROM nginx:stable-alpine
 
-COPY --chown=node:node . .
-RUN yarn install
-
-################################################################
-
-#USER root
-#RUN chown -R node:node /apps
-#USER node
-
-################################################################
-
-ARG APP_NAME="Polymesh Staging"
-ARG RPC_ENDPOINT="wss://staging-rpc.polymesh.live"
-ARG NODE_ENV="production"
-
-ENV APP_NAME="$APP_NAME"
-ENV RPC_ENDPOINT="$RPC_ENDPOINT"
-ENV NODE_ENV="$NODE_ENV"
-
-RUN bash scripts/updateEndpoint.sh
-
-################################################################
-
-#USER node
-RUN yarn
-RUN yarn build:www
-
-################################################################
-
-FROM nginx:stable as final
+# The following is mainly for doc purpose to show which ENV is supported
+ENV WS_URL=
 
 WORKDIR /usr/share/nginx/html
 
-COPY --chown=root:root --from=builder /apps/packages/apps/build /usr/share/nginx/html
+COPY env.sh .
+
+RUN apk add --no-cache bash; chmod +x env.sh
+
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /apps/packages/apps/build /usr/share/nginx/html
+COPY --from=builder /srv/env.var.list /srv/env.var.list
+COPY --chown=root:root deploy/replace-env-var-placeholders.sh /usr/local/bin/replace-env-var-placeholders.sh
+
+ENV APP_NAME=APP_NAME_NOT_SET
+ENV RPC_ENDPOINT=RPC_ENDPOINT_NOT_SET
+ENV WS_URL=WS_URL_NOT_SET
+ENV POLKADOT_UI_SAMPLE=POLKADOT_UI_SAMPLE_NOT_SET
 
 EXPOSE 80
 
-CMD nginx -g "daemon off;"
-
-################################################################
+CMD replace-env-var-placeholders.sh && \
+    /usr/share/nginx/html/env.sh && \
+    nginx -g 'daemon off;'
