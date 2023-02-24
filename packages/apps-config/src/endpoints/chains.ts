@@ -17,7 +17,7 @@ export const chains: EndpointOption[] = [
     info: 'polymesh',
     text: '__APP_NAME__',
     providers: {
-      Polymath: '__RPC_ENDPOINT__',
+      Polymath: '__RPC_ENDPOINT__'
     }
   }
 ];
