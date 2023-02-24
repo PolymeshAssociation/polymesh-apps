@@ -15910,6 +15910,9 @@ __metadata:
     styled-components: ^5.3.5
     webpack: ^5.73.0
     webpack-cli: ^4.10.0
+  dependenciesMeta:
+    "@cloudflare/wrangler":
+      optional: true
   languageName: unknown
   linkType: soft
 
