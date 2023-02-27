@@ -17,4 +17,4 @@ fi
 aws ecr get-login-password | \
     docker login "$CONTAINER_REGISTRY" --username AWS --password-stdin
 
-docker push "${CONTAINER_REGISTRY}/polymesh/polymesh-apps:${CONTAINER_TAG}" || true # temporary workaround for "... image tag already exists... and cannot be overwritten because the repository is immutable."
+docker push "${CONTAINER_REGISTRY}/polymesh/app-ui:${CONTAINER_TAG}" || true # temporary workaround for "... image tag already exists... and cannot be overwritten because the repository is immutable."

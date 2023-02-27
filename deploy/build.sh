@@ -8,4 +8,4 @@ set -exu -o pipefail
 
 export CONTAINER_TAG
 
-docker build -f deploy/Dockerfile -t "${CONTAINER_REGISTRY}/polymesh/polymesh-apps:${CONTAINER_TAG}" .
+docker build -f deploy/Dockerfile -t "${CONTAINER_REGISTRY}/polymesh/app-ui:${CONTAINER_TAG}" .
