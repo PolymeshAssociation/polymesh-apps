@@ -16,7 +16,7 @@ COPY . .
 
 RUN sed -n 's/^\(.*\)=.*$/\1=__\1__/p' .env-example > .env.production.local && \
     echo 'APP_NAME=__APP_NAME__' >> .env.production.local && \
-    echo 'RPC_ENDPOINT=__RPC_ENDPOINT__' >> .env.production.local && \
+    echo 'RPC_HOSTNAME=__RPC_HOSTNAME__' >> .env.production.local && \
     cat .env.production.local | \
         xargs -I{} bash -c "echo '{}' | sed 's/^\\(.*\\)=.*$/\\1/' >> /srv/env.var.list"
 
@@ -40,7 +40,7 @@ COPY --from=builder /srv/env.var.list /srv/env.var.list
 COPY --chown=root:root deploy/replace-env-var-placeholders.sh /usr/local/bin/replace-env-var-placeholders.sh
 
 ENV APP_NAME=APP_NAME_NOT_SET
-ENV RPC_ENDPOINT=RPC_ENDPOINT_NOT_SET
+ENV RPC_HOSTNAME=RPC_HOSTNAME_NOT_SET
 ENV WS_URL=WS_URL_NOT_SET
 ENV POLKADOT_UI_SAMPLE=POLKADOT_UI_SAMPLE_NOT_SET
 
