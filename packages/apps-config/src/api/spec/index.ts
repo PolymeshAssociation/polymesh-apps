@@ -89,6 +89,8 @@ import plasm from './plasm';
 import polkadex from './polkadex';
 import polkafoundry from './polkafoundry';
 import polymesh from './polymesh';
+import polymeshMainnet from './polymesh-mainnet';
+import polymeshTestnet from './polymesh-testnet';
 import pontem from './pontem';
 import prism from './prism';
 import quartz from './quartz';
@@ -240,8 +242,8 @@ const spec: Record<string, OverrideBundleDefinition> = {
   plasm,
   polymesh_ci: polymesh,
   polymesh_dev: polymesh,
-  polymesh_mainnet: polymesh,
-  polymesh_testnet: polymesh,
+  polymesh_mainnet: polymeshMainnet,
+  polymesh_testnet: polymeshTestnet,
   'pontem-node': pontem,
   prism,
   quartz,
