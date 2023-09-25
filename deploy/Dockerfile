@@ -17,6 +17,7 @@ COPY . .
 RUN sed -n 's/^\(.*\)=.*$/\1=__\1__/p' .env-example > .env.production.local && \
     echo 'APP_NAME=__APP_NAME__' >> .env.production.local && \
     echo 'RPC_HOSTNAME=__RPC_HOSTNAME__' >> .env.production.local && \
+    echo 'UI_COLOR=__UI_COLOR__' >> .env.production.local && \
     cat .env.production.local | \
         xargs -I{} bash -c "echo '{}' | sed 's/^\\(.*\\)=.*$/\\1/' >> /srv/env.var.list"
 
@@ -43,6 +44,7 @@ ENV APP_NAME=APP_NAME_NOT_SET
 ENV RPC_HOSTNAME=RPC_HOSTNAME_NOT_SET
 ENV WS_URL=WS_URL_NOT_SET
 ENV POLKADOT_UI_SAMPLE=POLKADOT_UI_SAMPLE_NOT_SET
+ENV UI_COLOR=UI_COLOR_NOT_SET
 
 EXPOSE 80
 

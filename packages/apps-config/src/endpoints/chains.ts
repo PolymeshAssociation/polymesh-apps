@@ -23,7 +23,7 @@ export const chains: EndpointOption[] = [
       Polymath: 'wss://__RPC_HOSTNAME__/'
     },
     ui: {
-      color: 'linear-gradient(197deg, #FF2E72, #4A125E)',
+      color: '__UI_COLOR__',
       logo: nodesPolymeshSVG
     }
   }
