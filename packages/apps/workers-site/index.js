@@ -1,4 +1,4 @@
-// Copyright 2017-2022 @polkadot/apps authors & contributors
+// Copyright 2017-2023 @polkadot/apps authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
@@ -49,7 +49,7 @@ async function handleEvent (event) {
         });
 
         return new Response(notFoundResponse.body, { ...notFoundResponse, status: 404 });
-      } catch (e) {}
+      } catch (_) {}
     }
 
     return new Response(e.message || e.toString(), { status: 500 });
