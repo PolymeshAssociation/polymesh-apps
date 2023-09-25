@@ -5,7 +5,7 @@ import type { TFunction, TOptions } from '../types.js';
 import type { LinkOption } from './types.js';
 
 import { chains } from './chains.js';
-import { createCustom, createDev, createOwn } from './development.js';
+import { createDev, createOwn } from './development.js';
 import { expandEndpoints } from './util.js';
 
 export { CUSTOM_ENDPOINT_KEY } from './development.js';
