@@ -14,6 +14,7 @@ import Balance from './Balance.js';
 import AccountId20 from './BasicAccountId20.js';
 import AccountId32 from './BasicAccountId32.js';
 import Bool from './Bool.js';
+import BTreeMap from './BTreeMap.js';
 import Bytes from './Bytes.js';
 import Call from './Call.js';
 import Cid from './Cid.js';
@@ -74,6 +75,7 @@ const componentDef: TypeToComponent[] = [
   { c: Text, t: ['String', 'Text'] },
   { c: Struct, t: ['Struct'] },
   { c: Tuple, t: ['Tuple'] },
+  { c: BTreeMap, t: ['BTreeMap'] },
   { c: Vector, t: ['Vec', 'BTreeSet'] },
   { c: VectorFixed, t: ['VecFixed'] },
   { c: Vote, t: ['Vote'] },
@@ -123,6 +125,9 @@ function fromDef ({ displayName, info, lookupName, sub, type }: TypeDef): string
 
     case TypeDefInfo.BTreeSet:
       return 'BTreeSet';
+
+    case TypeDefInfo.BTreeMap:
+      return 'BTreeMap';
 
     case TypeDefInfo.Tuple:
       return components[type] === Account
