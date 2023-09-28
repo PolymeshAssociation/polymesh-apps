@@ -14,7 +14,7 @@ import { getAccountCryptoType } from '@polkadot/react-components/util';
 import { useAccounts, useApi, useDelegations, useFavorites, useIpfs, useLedger, useNextTick, useProxies, useToggle } from '@polkadot/react-hooks';
 import { keyring } from '@polkadot/ui-keyring';
 import { settings } from '@polkadot/ui-settings';
-import { BN_ZERO, isFunction } from '@polkadot/util';
+import { BN_ZERO } from '@polkadot/util';
 
 import CreateModal from '../modals/Create.js';
 import ImportModal from '../modals/Import.js';
@@ -89,8 +89,8 @@ function groupAccounts (accounts: SortedAccount[]): Record<GroupName, string[]> 
 
 function Overview ({ className = '', onStatusChange }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { api, isElectron } = useApi();
-  const { allAccounts, hasAccounts } = useAccounts();
+  const { isElectron } = useApi();
+  const { allAccounts } = useAccounts();
   const { isIpfs } = useIpfs();
   const { isLedgerEnabled } = useLedger();
   const [isCreateOpen, toggleCreate] = useToggle();
@@ -156,16 +156,16 @@ function Overview ({ className = '', onStatusChange }: Props): React.ReactElemen
   );
 
   // detect multisigs
-  const hasPalletMultisig = useMemo(
-    () => isFunction((api.tx.multisig || api.tx.utility)?.approveAsMulti),
-    [api]
-  );
+  // const hasPalletMultisig = useMemo(
+  //   () => isFunction((api.tx.multisig || api.tx.utility)?.approveAsMulti),
+  //   [api]
+  // );
 
   // proxy support
-  const hasPalletProxy = useMemo(
-    () => isFunction(api.tx.proxy?.addProxy),
-    [api]
-  );
+  // const hasPalletProxy = useMemo(
+  //   () => isFunction(api.tx.proxy?.addProxy),
+  //   [api]
+  // );
 
   const accountsMap = useMemo(
     () => allAccounts
