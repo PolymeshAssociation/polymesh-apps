@@ -19,13 +19,14 @@ module.exports = merge(
     output: {
       crossOriginLoading: 'anonymous'
     },
-    plugins: [
+    plugins: (process.env.SUBRESOURCE_INTEGRITY_PLUGIN ? [
       new SubresourceIntegrityPlugin(),
+    ] : []).concat([
       new HtmlWebpackPlugin({
         PAGE_TITLE: 'Polymesh App',
         minify: false,
         template: path.join(context, `${hasPublic ? 'public/' : ''}index.html`)
-      })
-    ]
+      }),
+    ]),
   }
 );
