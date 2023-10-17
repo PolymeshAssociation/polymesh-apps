@@ -1,29 +1,39 @@
-FROM ubuntu:18.04 as builder
+################################################################
+
+ARG NODE_VERSION=hydrogen
+ARG NODE_CONTAINER_TAG=${NODE_VERSION}-bullseye-slim
+
+################################################################
+
+FROM node:${NODE_CONTAINER_TAG} as builder
+
+################################################################
+
+USER root
+RUN npm i -g npm
+
+################################################################
 
 # Install any needed packages
 RUN apt-get update && \
-  apt-get install --no-install-recommends -y curl git gnupg ca-certificates python3 pkg-config make cmake g++ libudev-dev libusb-1.0-0-dev
+    apt-get install --no-install-recommends -y curl git gnupg ca-certificates python3 pkg-config make cmake g++ libudev-dev libusb-1.0-0-dev
 
-# install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get install --no-install-recommends -y nodejs && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
-RUN npm install yarn -g
+################################################################
 
 WORKDIR /apps
-COPY . .
+
+COPY --chown=node:node . .
 
 RUN sed -n 's/^\(.*\)=.*$/\1=__\1__/p' .env-example > .env.production.local && \
-    echo 'APP_NAME=__APP_NAME__' >> .env.production.local && \
-    echo 'RPC_HOSTNAME=__RPC_HOSTNAME__' >> .env.production.local && \
-    echo 'UI_COLOR=__UI_COLOR__' >> .env.production.local && \
     cat .env.production.local | \
         xargs -I{} bash -c "echo '{}' | sed 's/^\\(.*\\)=.*$/\\1/' >> /srv/env.var.list"
 
+USER node
+
 RUN yarn && NODE_ENV=production yarn build:www
 
-# ===========================================================
+################################################################
+
 FROM nginx:stable-alpine
 
 # The following is mainly for doc purpose to show which ENV is supported
@@ -51,3 +61,5 @@ EXPOSE 80
 CMD replace-env-var-placeholders.sh && \
     /usr/share/nginx/html/env.sh && \
     nginx -g 'daemon off;'
+
+################################################################
