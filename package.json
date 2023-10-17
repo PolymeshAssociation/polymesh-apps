@@ -71,7 +71,6 @@
     "wrangler:testnet:publish": "yarn run build:www && cd packages/apps && npx wrangler publish --env testnet"
   },
   "devDependencies": {
-    "@cloudflare/wrangler": "^1.10.3",
     "@crustio/crust-pin": "^1.0.0",
     "@pinata/sdk": "^2.1.0",
     "@polkadot/dev": "^0.72.32",
