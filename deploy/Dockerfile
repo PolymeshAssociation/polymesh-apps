@@ -24,6 +24,8 @@ WORKDIR /apps
 
 COPY --chown=node:node . .
 
+RUN chown -R node: /apps
+
 RUN sed -n 's/^\(.*\)=.*$/\1=__\1__/p' .env-example > .env.production.local && \
     cat .env.production.local | \
         xargs -I{} bash -c "echo '{}' | sed 's/^\\(.*\\)=.*$/\\1/' >> /srv/env.var.list"
