@@ -20,7 +20,7 @@ const FACTORS = [0.2126, 0.7152, 0.0722];
 const PARTS = [0, 2, 4];
 const VERY_DARK = 16;
 
-//const defaultHighlight = '#f19135';
+// const defaultHighlight = '#f19135';
 
 /* replace template placeholder with default value if not overridden at run-time */
 const defaultHighlight = /^_{2}UI_COLOR_{2}$/.test('__UI_COLOR__') ? '#f19135' : '__UI_COLOR__';
