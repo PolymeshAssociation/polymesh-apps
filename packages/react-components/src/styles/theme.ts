@@ -10,7 +10,7 @@ export const colorBtnShadow = '#98999a';
 // export const colorBtnHighlight = '#f19135';
 
 /* replace template placeholder with default value if not overridden at run-time */
-export const colorBtnHighlight = /^_{2}UI_COLOR_{2}$/.test('__UI_COLOR__') ? '#f19135' : '__UI_COLOR__';
+export const colorBtnHighlight = /^(_{2}UI_COLOR_{2})?$/.test('__UI_COLOR__') ? '#f19135' : '__UI_COLOR__';
 
 /* primary buttons, blue */
 export const colorBtnPrimary = colorBtnDefault; // '#2e86ab';
