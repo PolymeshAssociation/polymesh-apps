@@ -95,6 +95,8 @@ import pichiu from './pichiu.js';
 import polkadex from './polkadex.js';
 import polkafoundry from './polkafoundry.js';
 import polymeshMainnet from './polymesh-mainnet.js';
+import polymeshPrivateDev from './polymesh-private-dev.js';
+import polymeshPrivateProd from './polymesh-private-prod.js';
 import polymeshTestnet from './polymesh-testnet.js';
 import pontem from './pontem.js';
 import prism from './prism.js';
@@ -257,6 +259,8 @@ const spec: Record<string, OverrideBundleDefinition> = {
   polymesh_ci: polymeshTestnet,
   polymesh_dev: polymeshTestnet,
   polymesh_mainnet: polymeshMainnet,
+  polymesh_private_dev: polymeshPrivateDev,
+  polymesh_private_prod: polymeshPrivateProd,
   polymesh_testnet: polymeshTestnet,
   'pontem-node': pontem,
   prism,
