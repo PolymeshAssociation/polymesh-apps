@@ -19,7 +19,7 @@ export const chains: EndpointOption[] = [
     info: 'polymesh',
     text: '__APP_NAME__',
     providers: {
-      Polymath: 'wss://__RPC_HOSTNAME__/'
+      Polymesh: 'wss://__RPC_HOSTNAME__/'
     },
     ui: {
       color: '__UI_COLOR__',
