@@ -1,4 +1,4 @@
-// Copyright 2017-2023 @polkadot/apps authors & contributors
+// Copyright 2017-2024 @polkadot/apps authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import fs from 'node:fs';
@@ -7,7 +7,7 @@ import path from 'node:path';
 import { formatNumber, stringCamelCase } from '@polkadot/util';
 
 const MAX_SIZE = 48 * 1024;
-const HEADER = '// Copyright 2017-2023 @polkadot/apps authors & contributors\n// SPDX-License-Identifier: Apache-2.0\n\n// Do not edit. Auto-generated via node scripts/imgConvert.mjs\n\n';
+const HEADER = '// Copyright 2017-2024 @polkadot/apps authors & contributors\n// SPDX-License-Identifier: Apache-2.0\n\n// Do not edit. Auto-generated via node scripts/imgConvert.mjs\n\n';
 
 const MIME = {
   gif: 'image/gif',

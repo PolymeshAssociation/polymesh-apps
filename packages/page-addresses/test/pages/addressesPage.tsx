@@ -1,4 +1,4 @@
-// Copyright 2017-2023 @polkadot/page-addresses authors & contributors
+// Copyright 2017-2024 @polkadot/page-addresses authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { AccountOverrides as ContactOverrides } from '@polkadot/test-support/types';
