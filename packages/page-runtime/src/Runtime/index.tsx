@@ -24,13 +24,28 @@ function RuntimeApp (): React.ReactElement {
   );
 
   const onSubmit = useCallback(
-    (def: DefinitionCallNamed, values: RawParam[]): void => {
-      api.call[def.section][def.method](...values.map(({ value }) => value))
-        .then((result) => addResult({ def, id: ++id, result }))
-        .catch((e): void => {
-          addResult({ def, error: e as Error, id: ++id });
-          console.error(e);
-        });
+    (hash: string, def: DefinitionCallNamed, values: RawParam[]): void => {
+      if (hash.length > 0) {
+        api.at(hash).then((apiAt) => {
+          apiAt.call[def.section][def.method](...values.map(({ value }) => value))
+            .then((result) => addResult({ def, id: ++id, result }))
+            .catch((e): void => {
+              addResult({ def, error: e as Error, id: ++id });
+              console.error(e);
+            });
+        })
+          .catch((e): void => {
+            addResult({ def, error: e as Error, id: ++id });
+            console.error(e);
+          });
+      } else {
+        api.call[def.section][def.method](...values.map(({ value }) => value))
+          .then((result) => addResult({ def, id: ++id, result }))
+          .catch((e): void => {
+            addResult({ def, error: e as Error, id: ++id });
+            console.error(e);
+          });
+      }
     },
     [api, addResult]
   );

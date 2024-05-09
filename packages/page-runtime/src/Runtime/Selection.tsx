@@ -6,17 +6,18 @@ import type { DefinitionCallNamed } from '@polkadot/types/types';
 
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { Button, InputCalls } from '@polkadot/react-components';
+import { Button, Input, InputCalls } from '@polkadot/react-components';
 import Params from '@polkadot/react-params';
 import { getTypeDef } from '@polkadot/types/create';
 
 import { useTranslation } from '../translate.js';
 
 interface Props {
-  onSubmit: (call: DefinitionCallNamed, values: RawParam[]) => void;
+  onSubmit: (hash: string, call: DefinitionCallNamed, values: RawParam[]) => void;
 }
 
 interface State {
+  hash: string;
   isValid: boolean;
   method: DefinitionCallNamed | null;
   values: RawParam[];
@@ -24,7 +25,8 @@ interface State {
 
 function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const [{ isValid, method, values }, setState] = useState<State>({
+  const [{ hash, isValid, method, values }, setState] = useState<State>({
+    hash: '',
     isValid: false,
     method: null,
     values: []
@@ -42,16 +44,22 @@ function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
 
   const _nextState = useCallback(
     (newState: Partial<State>) => setState((prevState: State): State => {
-      const { method = prevState.method, values = prevState.values } = newState;
+      const { hash = prevState.hash, method = prevState.method, values = prevState.values } = newState;
       const isValid = values.reduce((isValid, value) => isValid && value.isValid === true, !!method && method.params.length <= values.length);
 
       return {
+        hash,
         isValid,
         method,
         values
       };
     }),
     []
+  );
+
+  const _onChangeBlockHash = useCallback(
+    (hash: string) => _nextState({ hash }),
+    [_nextState]
   );
 
   const _onChangeMethod = useCallback(
@@ -66,9 +74,9 @@ function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
 
   const _onSubmit = useCallback(
     (): void => {
-      method && onSubmit(method, values);
+      method && onSubmit(hash, method, values);
     },
-    [onSubmit, method, values]
+    [onSubmit, hash, method, values]
   );
 
   return (
@@ -84,6 +92,11 @@ function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
           params={params}
         />
       )}
+      <Input
+        label={t('at block')}
+        onChange={_onChangeBlockHash}
+        placeholder={t('0x...')}
+      />
       <Button.Group>
         <Button
           icon='sign-in-alt'
