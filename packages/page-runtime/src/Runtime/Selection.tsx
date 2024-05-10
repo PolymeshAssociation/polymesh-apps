@@ -93,9 +93,9 @@ function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
         />
       )}
       <Input
-        label={t('at block')}
+        label={t<string>('at block')}
         onChange={_onChangeBlockHash}
-        placeholder={t('0x...')}
+        placeholder={t<string>('0x...')}
       />
       <Button.Group>
         <Button

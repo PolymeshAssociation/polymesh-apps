@@ -1,5 +1,7 @@
 {
+  "0x...": "0x...",
   "Calls": "Calls",
   "Submit Runtime call": "Submit Runtime call",
+  "at block": "at block",
   "call the selected endpoint": "call the selected endpoint"
 }
