@@ -43,7 +43,23 @@ interface Validity {
 const defaultValidate = (): boolean =>
   true;
 
-function convertInput (value: string): [boolean, boolean, Uint8Array] {
+function decodeUUID (value: string): Uint8Array {
+  // Define the regular expression for validating a UUID (note we only check formatting, not UUID scheme)
+  const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+  // Check if the value matches the UUID format
+  if (!uuidRegex.test(value)) {
+    throw new Error('Invalid UUID passed');
+  }
+
+  // Remove hyphens to get the raw hex representation
+  const hexValue = value.replace(/-/g, '');
+
+  // Return hex representation prefixed with '0x'
+  return hexToU8a(`0x${hexValue}`);
+}
+
+function convertInput (value: string, isAssetId: boolean): [boolean, boolean, Uint8Array] {
   if (value === '0x') {
     return [true, false, new Uint8Array([])];
   } else if (value.startsWith('0x')) {
@@ -59,6 +75,15 @@ function convertInput (value: string): [boolean, boolean, Uint8Array] {
     return [true, true, decodeAddress(value)];
   } catch {
     // we continue
+  }
+
+  // maybe it is a UUID (only for AssetIds)
+  if (isAssetId) {
+    try {
+      return [true, false, decodeUUID(value)];
+    } catch {
+      // we continue
+    }
   }
 
   return isAscii(value)
@@ -85,10 +110,10 @@ function BaseBytes ({ asHex, children, className = '', defaultValue: { value }, 
     isAddress: false,
     isValid: isHex(defaultValue) || isAscii(defaultValue)
   }));
-
+  const isAssetId = label === 'PolymeshPrimitivesAssetAssetId';
   const _onChange = useCallback(
     (hex: string): void => {
-      let [isValid, isAddress, value] = convertInput(hex);
+      let [isValid, isAddress, value] = convertInput(hex, isAssetId);
 
       isValid = isValid && validate(value) && (
         length !== -1
@@ -109,7 +134,7 @@ function BaseBytes ({ asHex, children, className = '', defaultValue: { value }, 
 
       setValidity({ isAddress, isValid, lastValue: value });
     },
-    [asHex, length, onChange, validate, withLength]
+    [asHex, length, onChange, validate, withLength, isAssetId]
   );
 
   return (
@@ -125,7 +150,11 @@ function BaseBytes ({ asHex, children, className = '', defaultValue: { value }, 
         onChange={_onChange}
         onEnter={onEnter}
         onEscape={onEscape}
-        placeholder={t<string>('0x prefixed hex, e.g. 0x1234 or ascii data')}
+        placeholder={
+          isAssetId
+            ? t<string>('0x prefixed hex - e.g. 0x1234, a UUID, or ascii data')
+            : t<string>('0x prefixed hex - e.g. 0x1234, or ascii data')
+        }
         type='text'
         withEllipsis
         withLabel={withLabel}

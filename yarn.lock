@@ -1720,7 +1720,7 @@ __metadata:
     "@polkadot/wasm-util": ^7.0.3
     "@polkadot/x-fetch": ^11.1.3
     "@polkadot/x-ws": ^11.1.3
-    "@polymeshassociation/polymesh-types": 5.11.1
+    "@polymeshassociation/polymesh-types": 5.14.0
     "@snowfork/snowbridge-types": 0.2.7
     "@sora-substrate/type-definitions": 1.15.12
     "@subsocial/definitions": 0.8.7
@@ -2525,10 +2525,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polymeshassociation/polymesh-types@npm:5.11.1":
-  version: 5.11.1
-  resolution: "@polymeshassociation/polymesh-types@npm:5.11.1"
-  checksum: d2458eae376bed9db1bd725c2859613af8f9c7ebcd3aeab6ac4884cd584886ee7f900d44a86e1b0eb2a3e040846c47dbd8a0c94c0db33088c79277173349c694
+"@polymeshassociation/polymesh-types@npm:5.14.0":
+  version: 5.14.0
+  resolution: "@polymeshassociation/polymesh-types@npm:5.14.0"
+  checksum: 163acb5c61046809d43a89889c44ede9a2d61fdf1035dc7e88afe4801e243680651f27c70ea26e7fb37386c680f9def371abb59f4082536ea7321a3ab8790f70
   languageName: node
   linkType: hard
 

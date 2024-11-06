@@ -1,4 +1,6 @@
 {
+  "0x prefixed hex - e.g. 0x1234, a UUID, or ascii data": "0x prefixed hex - e.g. 0x1234, a UUID, or ascii data",
+  "0x prefixed hex - e.g. 0x1234, or ascii data": "0x prefixed hex - e.g. 0x1234, or ascii data",
   "0x prefixed hex, e.g. 0x1234 or ascii data": "0x prefixed hex, e.g. 0x1234 or ascii data",
   "<empty>": "<empty>",
   "Add item": "Add item",
