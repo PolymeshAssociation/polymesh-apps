@@ -110,7 +110,8 @@ function BaseBytes ({ asHex, children, className = '', defaultValue: { value }, 
     isAddress: false,
     isValid: isHex(defaultValue) || isAscii(defaultValue)
   }));
-  const isAssetId = label === 'PolymeshPrimitivesAssetAssetId';
+  const isAssetId = typeof label === 'string' && label.includes('PolymeshPrimitivesAssetAssetId');
+
   const _onChange = useCallback(
     (hex: string): void => {
       let [isValid, isAddress, value] = convertInput(hex, isAssetId);
