@@ -1,4 +1,4 @@
-// Copyright 2017-2024 @polkadot/react-params authors & contributors
+// Copyright 2017-2025 @polkadot/react-params authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { RawParam, RawParamOnChange, RawParamOnEnter, RawParamOnEscape, Size, TypeDefExt } from '../types.js';
@@ -110,7 +110,7 @@ function BaseBytes ({ asHex, children, className = '', defaultValue: { value }, 
     isAddress: false,
     isValid: isHex(defaultValue) || isAscii(defaultValue)
   }));
-  const isAssetId = typeof label === 'string' && label.includes('PolymeshPrimitivesAssetAssetId');
+  const isAssetId = typeof label === 'string' && (label.includes('PolymeshPrimitivesAssetAssetId') || label.includes('PolymeshAssetId'));
 
   const _onChange = useCallback(
     (hex: string): void => {
