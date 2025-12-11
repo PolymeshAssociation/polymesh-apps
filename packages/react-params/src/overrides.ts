@@ -7,7 +7,7 @@ import BalanceParam from './Param/Balance.js';
 
 export const balanceCalls = [
   'auctions.bid',
-  'balances.forceTransfer', 'balances.forceUnreserve', 'balances.setBalance', 'balances.transfer', 'balances.transferAllowDeath', 'balances.transferKeepAlive',
+  'balances.forceTransfer', 'balances.forceUnreserve', 'balances.setBalance', 'balances.transfer', 'balances.transferAllowDeath', 'balances.transferKeepAlive', 'balances.transferWithMemo',
   'bounties.proposeBounty', 'bounties.proposeCurator',
   'childBounties.addChildBounty', 'childBounties.proposeCurator',
   'claims.mintClaim',
@@ -27,7 +27,7 @@ export const balanceCalls = [
 // needs expansion with events from above
 export const balanceEvents = [
   'auctions.BidAccepted', 'auctions.ReserveConfiscated', 'auctions.Reserved', 'auctions.Unreserved',
-  'balances.Deposit', 'balances.DustLost', 'balances.Endowed', 'balances.Transfer', 'balances.Unreserved', 'balances.Withdraw',
+  'balances.Deposit', 'balances.DustLost', 'balances.Endowed', 'balances.Transfer', 'balances.TransferWithMemo', 'balances.Unreserved', 'balances.Withdraw',
   'bounties.BountyClaimed', 'bounties.BountyRejected',
   'claims.Claimed',
   'convictionVoting.Voted',

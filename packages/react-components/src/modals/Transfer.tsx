@@ -6,14 +6,15 @@ import type { AccountInfoWithProviders, AccountInfoWithRefCount } from '@polkado
 import type { KeyringJson$Meta } from '@polkadot/ui-keyring/types';
 import type { BN } from '@polkadot/util';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { checkAddress } from '@polkadot/phishing';
-import { useApi, useCall } from '@polkadot/react-hooks';
+import { useApi, useCall, usePolymeshVersion } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { settings } from '@polkadot/ui-settings';
-import { BN_HUNDRED, BN_ZERO, isFunction, nextTick } from '@polkadot/util';
+import { BN_HUNDRED, BN_ZERO, isFunction, nextTick, stringToU8a, u8aToHex } from '@polkadot/util';
 
+import Input from '../Input.js';
 import InputAddress from '../InputAddress/index.js';
 import InputBalance from '../InputBalance.js';
 import MarkError from '../MarkError.js';
@@ -52,10 +53,12 @@ async function checkPhishing (_senderId: string | null, recipientId: string | nu
 function Transfer ({ className = '', onClose, recipientId: propRecipientId, senderId: propSenderId }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
+  const { isPolymesh, isV8Plus } = usePolymeshVersion();
   const [amount, setAmount] = useState<BN | undefined>(BN_ZERO);
   const [hasAvailable] = useState(true);
   const [isProtected, setIsProtected] = useState(true);
   const [isAll, setIsAll] = useState(false);
+  const [memo, setMemo] = useState<string>('');
   const [senderIdMeta, setSenderIdMeta] = useState<KeyringJson$Meta>();
   const [[maxTransfer, noFees], setMaxTransfer] = useState<[BN | null, boolean]>([null, false]);
   const [recipientId, setRecipientId] = useState<string | null>(null);
@@ -63,6 +66,42 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
   const [[, recipientPhish], setPhishing] = useState<[string | null, string | null]>([null, null]);
   const balances = useCall<DeriveBalancesAll>(api.derive.balances?.all, [propSenderId || senderId]);
   const accountInfo = useCall<AccountInfoWithProviders | AccountInfoWithRefCount>(api.query.system.account, [propSenderId || senderId]);
+
+  const memoError = useMemo(() => {
+    if (!memo?.trim()) {
+      return null;
+    }
+
+    try {
+      const bytes = stringToU8a(memo);
+
+      if (bytes.length > 32) {
+        return t('Memo must not exceed 32 bytes');
+      }
+
+      return null;
+    } catch {
+      return t('Invalid memo format');
+    }
+  }, [memo, t]);
+
+  const memoHex = useMemo(() => {
+    if (!memo?.trim() || memoError) {
+      return null;
+    }
+
+    try {
+      const bytes = stringToU8a(memo);
+      // Pad to 32 bytes with null characters
+      const padded = new Uint8Array(32);
+
+      padded.set(bytes, 0);
+
+      return u8aToHex(padded);
+    } catch {
+      return null;
+    }
+  }, [memo, memoError]);
 
   useEffect((): void => {
     const fromId = propSenderId || senderId;
@@ -73,13 +112,16 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
     if (balances && balances.accountId?.eq(fromId) && fromId && toId && api.call.transactionPaymentApi && api.tx.balances) {
       nextTick(async (): Promise<void> => {
         try {
-          const extrinsic = (api.tx.balances.transferAllowDeath || api.tx.balances.transfer)(toId, (balances.transferable || balances.availableBalance));
+          // Use appropriate extrinsic for fee calculation
+          const extrinsic = isPolymesh && !isV8Plus
+            ? api.tx.balances.transfer(toId, (balances.transferable || balances.availableBalance))
+            : (api.tx.balances.transferAllowDeath || api.tx.balances.transfer)(toId, (balances.transferable || balances.availableBalance));
           const { partialFee } = await extrinsic.paymentInfo(fromId);
           const adjFee = partialFee.muln(110).div(BN_HUNDRED);
           const maxTransfer = (balances.transferable || balances.availableBalance).sub(adjFee);
 
           setMaxTransfer(
-            api.consts.balances && maxTransfer.gt(api.consts.balances.existentialDeposit)
+            isPolymesh || (api.consts.balances && maxTransfer.gt(api.consts.balances.existentialDeposit))
               ? [maxTransfer, false]
               : [null, true]
           );
@@ -90,7 +132,7 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
     } else {
       setMaxTransfer([null, false]);
     }
-  }, [api, balances, propRecipientId, propSenderId, recipientId, senderId]);
+  }, [api, balances, propRecipientId, propSenderId, recipientId, senderId, isPolymesh, isV8Plus]);
 
   useEffect((): void => {
     checkPhishing(propSenderId || senderId, propRecipientId || recipientId)
@@ -103,7 +145,8 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
       ? accountInfo.refcount.isZero()
       : accountInfo.consumers.isZero()
     : true;
-  const canToggleAll = !isProtected && balances && balances.accountId?.eq(propSenderId || senderId) && maxTransfer && noReference;
+  // Disable transfer all for Polymesh to reduce complexity with handling memos
+  const canToggleAll = !isPolymesh && !isProtected && balances && balances.accountId?.eq(propSenderId || senderId) && maxTransfer && noReference;
 
   return (
     <StyledModal
@@ -177,7 +220,28 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
               )
             }
           </Modal.Columns>
-          <Modal.Columns hint={t('With the keep-alive option set, the account is protected against removal due to low balances.')}>
+          {isPolymesh && (
+            <Modal.Columns hint={t('Optional text memo to attach to the transfer (max 32 characters).')}>
+              <Input
+                isError={!!memoError}
+                label={t('memo (optional)')}
+                maxLength={32}
+                onChange={setMemo}
+                placeholder={t('Enter memo text...')}
+                value={memo}
+              />
+              {memoError && (
+                <MarkError content={memoError} />
+              )}
+            </Modal.Columns>
+          )}
+          <Modal.Columns
+            hint={
+              isFunction(api.tx.balances?.transferKeepAlive)
+                ? t('With the keep-alive option set, the account is protected against removal due to low balances.')
+                : undefined
+            }
+          >
             {isFunction(api.tx.balances?.transferKeepAlive) && (
               <Toggle
                 className='typeToggle'
@@ -217,23 +281,59 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
           isDisabled={
             (!isAll && (!hasAvailable || !amount)) ||
             !(propRecipientId || recipientId) ||
-            !!recipientPhish
+            !!recipientPhish ||
+            !!memoError
           }
           label={t('Make Transfer')}
           onStart={onClose}
           params={
-            canToggleAll && isAll
-              ? isFunction(api.tx.balances?.transferAll)
-                ? [propRecipientId || recipientId, false]
-                : [propRecipientId || recipientId, maxTransfer]
-              : [propRecipientId || recipientId, amount]
+            (() => {
+              const toId = propRecipientId || recipientId;
+              const hasMemo = isPolymesh && memo && !memoError && memoHex;
+
+              // Transfer all (only on non-Polymesh chains)
+              if (canToggleAll && isAll) {
+                return isFunction(api.tx.balances?.transferAll)
+                  ? [toId, false]
+                  : [toId, maxTransfer];
+              }
+
+              // Regular transfer with optional memo
+              return hasMemo
+                ? [toId, amount, memoHex]
+                : [toId, amount];
+            })()
           }
           tx={
-            canToggleAll && isAll && isFunction(api.tx.balances?.transferAll)
-              ? api.tx.balances?.transferAll
-              : isProtected
-                ? api.tx.balances?.transferKeepAlive
-                : api.tx.balances?.transferAllowDeath || api.tx.balances?.transfer
+            (() => {
+              const hasMemo = isPolymesh && memo && !memoError && memoHex;
+
+              // Polymesh: Use transferWithMemo if memo provided, otherwise use appropriate version
+              if (isPolymesh) {
+                if (hasMemo) {
+                  return api.tx.balances?.transferWithMemo;
+                }
+
+                // Polymesh v7 only has transfer, v8+ has standard extrinsics
+                if (isV8Plus && isProtected) {
+                  return api.tx.balances?.transferKeepAlive || api.tx.balances?.transfer;
+                }
+
+                // For non-protected transfers, try transferAllowDeath first (v8+), then fall back to transfer (v7)
+                return api.tx.balances?.transferAllowDeath || api.tx.balances?.transfer;
+              }
+
+              // Standard Polkadot chains
+              if (canToggleAll && isAll && isFunction(api.tx.balances?.transferAll)) {
+                return api.tx.balances?.transferAll;
+              }
+
+              if (isProtected && isFunction(api.tx.balances?.transferKeepAlive)) {
+                return api.tx.balances?.transferKeepAlive;
+              }
+
+              return api.tx.balances?.transferAllowDeath || api.tx.balances?.transfer;
+            })()
           }
         />
       </Modal.Actions>

@@ -9,7 +9,7 @@ import type { FrameSupportDispatchPerDispatchClassWeight } from '@polkadot/types
 import React, { useMemo } from 'react';
 
 import { CardSummary, SummaryBox } from '@polkadot/react-components';
-import { useApi } from '@polkadot/react-hooks';
+import { useApi, usePolymeshVersion } from '@polkadot/react-hooks';
 import { convertWeight } from '@polkadot/react-hooks/useWeight';
 import { FormatBalance } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_THREE, BN_TWO, formatNumber, isBn } from '@polkadot/util';
@@ -49,7 +49,7 @@ function accumulateWeights (
   return { totalProofSize, totalRefTime };
 }
 
-function extractEventDetails (events?: KeyedEvent[] | null): [BN?, BN?, BN?, BN?] {
+function extractEventDetails (events?: KeyedEvent[] | null, isPolymeshV7?: boolean): [BN?, BN?, BN?, BN?] {
   return events
     ? events.reduce(([deposits, transfers, weight, proofSize], { record: { event: { data, method, section } } }) => {
       const size = (convertWeight(
@@ -61,7 +61,9 @@ function extractEventDetails (events?: KeyedEvent[] | null): [BN?, BN?, BN?, BN?
           ? deposits.iadd(data[1] as Balance)
           : deposits,
         section === 'balances' && method === 'Transfer'
-          ? transfers.iadd(data[2] as Balance)
+          // Polymesh v7 Transfer: [Option<IdentityId>, AccountId, Option<IdentityId>, AccountId, Balance, Option<Memo>]
+          // Standard Transfer: [AccountId, AccountId, Balance]
+          ? transfers.iadd((isPolymeshV7 ? data[4] : data[2]) as Balance)
           : transfers,
         section === 'system' && ['ExtrinsicFailed', 'ExtrinsicSuccess'].includes(method)
           ? weight.iadd(convertWeight(
@@ -79,10 +81,11 @@ function extractEventDetails (events?: KeyedEvent[] | null): [BN?, BN?, BN?, BN?
 function Summary ({ blockWeight, events, maxBlockWeight, maxProofSize, signedBlock }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
+  const { isPolymesh, isV8Plus } = usePolymeshVersion();
 
   const [deposits, transfers, weight, size] = useMemo(
     () => {
-      const eventDetails = extractEventDetails(events);
+      const eventDetails = extractEventDetails(events, isPolymesh && !isV8Plus);
       const { totalProofSize, totalRefTime } = accumulateWeights(blockWeight);
 
       // Block weight is the source of truth; using events data as fallback only
@@ -93,7 +96,7 @@ function Summary ({ blockWeight, events, maxBlockWeight, maxProofSize, signedBlo
 
       return eventDetails;
     },
-    [blockWeight, events]
+    [blockWeight, events, isPolymesh, isV8Plus]
   );
 
   return (
