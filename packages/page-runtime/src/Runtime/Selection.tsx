@@ -6,20 +6,26 @@ import type { DefinitionCallNamed } from '@polkadot/types/types';
 
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { Button, InputCalls } from '@polkadot/react-components';
+import { Button, Input, InputCalls } from '@polkadot/react-components';
 import Params from '@polkadot/react-params';
 import { getTypeDef } from '@polkadot/types/create';
+import { isHex } from '@polkadot/util';
 
 import { useTranslation } from '../translate.js';
 
 interface Props {
-  onSubmit: (call: DefinitionCallNamed, values: RawParam[]) => void;
+  onSubmit: (call: DefinitionCallNamed, values: RawParam[], blockHash: string | null) => void;
 }
 
 interface State {
   isValid: boolean;
   method: DefinitionCallNamed | null;
   values: RawParam[];
+}
+
+interface BlockHash {
+  blockHash: string | null;
+  textHash: string;
 }
 
 /**
@@ -35,6 +41,7 @@ function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
     method: null,
     values: []
   });
+  const [{ blockHash, textHash }, setBlockHash] = useState<BlockHash>({ blockHash: null, textHash: '' });
 
   const params = useMemo(
     () => method
@@ -70,11 +77,21 @@ function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
     [_nextState]
   );
 
+  const _onChangeAt = useCallback(
+    (textHash: string) => setBlockHash({
+      blockHash: isHex(textHash, 256)
+        ? textHash
+        : null,
+      textHash
+    }),
+    []
+  );
+
   const _onSubmit = useCallback(
     (): void => {
-      method && onSubmit(method, values);
+      method && onSubmit(method, values, blockHash);
     },
-    [onSubmit, method, values]
+    [onSubmit, method, values, blockHash]
   );
 
   return (
@@ -91,10 +108,16 @@ function Selection ({ onSubmit }: Props): React.ReactElement<Props> {
           withLength={!WITHOUT_LENGTH.includes(method.section)}
         />
       )}
+      <Input
+        isError={!!textHash && (!blockHash)}
+        label={t('blockhash to query at')}
+        onChange={_onChangeAt}
+        placeholder={t('0x...')}
+      />
       <Button.Group>
         <Button
           icon='sign-in-alt'
-          isDisabled={!isValid || !method}
+          isDisabled={!isValid || !method || (!!textHash && !blockHash)}
           label={t('Submit Runtime call')}
           onClick={_onSubmit}
         />
