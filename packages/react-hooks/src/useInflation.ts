@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { ApiPromise } from '@polkadot/api';
-import type { BN } from '@polkadot/util';
 import type { Inflation } from './types.js';
 
 import { useEffect, useState } from 'react';
 
 import { getInflationParams } from '@polkadot/apps-config';
-import { BN_MILLION, BN_ZERO } from '@polkadot/util';
+import { BN, BN_MILLION, BN_ZERO } from '@polkadot/util';
 
 import { createNamedHook } from './createNamedHook.js';
 import { useApi } from './useApi.js';
@@ -17,7 +16,7 @@ import { useCall } from './useCall.js';
 const EMPTY: Inflation = { idealInterest: 0, idealStake: 0, inflation: 0, stakedFraction: 0, stakedReturn: 0 };
 
 function calcInflation (api: ApiPromise, totalStaked: BN, totalIssuance: BN, numAuctions: BN): Inflation {
-  const { auctionAdjust, auctionMax, falloff, maxInflation, minInflation, stakeTarget } = getInflationParams(api);
+  const { auctionAdjust, auctionMax, falloff, maxInflation, maxInflationAmount, minInflation, stakeTarget } = getInflationParams(api);
   const stakedFraction = totalStaked.isZero() || totalIssuance.isZero()
     ? 0
     : totalStaked.mul(BN_MILLION).div(totalIssuance).toNumber() / BN_MILLION.toNumber();
@@ -29,11 +28,23 @@ function calcInflation (api: ApiPromise, totalStaked: BN, totalIssuance: BN, num
     : maxInflation / idealStake;
   // inflation calculations, see
   // https://github.com/paritytech/substrate/blob/0ba251c9388452c879bfcca425ada66f1f9bc802/frame/staking/reward-fn/src/lib.rs#L28-L54
-  const inflation = 100 * (minInflation + (
+  let inflation = 100 * (minInflation + (
     stakedFraction <= idealStake
       ? (stakedFraction * (idealInterest - (minInflation / idealStake)))
       : ((maxInflation - minInflation) * Math.pow(2, (idealStake - stakedFraction) / falloff))
   ));
+
+  // Apply Polymesh-specific cap: inflation is the LESSER of calculated inflation or maxInflationAmount per year
+  if (maxInflationAmount && !totalIssuance.isZero()) {
+    const decimals = api.registry.chainDecimals[0] || 6;
+    const inflationAmountPerYear = totalIssuance.muln(inflation).divn(100);
+    const maxInflationAmountBN = new BN(maxInflationAmount).mul(new BN(10).pow(new BN(decimals)));
+
+    if (inflationAmountPerYear.gt(maxInflationAmountBN)) {
+      // Cap reached: recalculate inflation percentage based on the cap
+      inflation = maxInflationAmountBN.mul(BN_MILLION).muln(100).div(totalIssuance).toNumber() / BN_MILLION.toNumber();
+    }
+  }
 
   return {
     idealInterest,
