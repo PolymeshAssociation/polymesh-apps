@@ -12,6 +12,8 @@ interface InflationParams {
   maxInflation: number;
   minInflation: number;
   stakeTarget: number;
+  /** Optional: Maximum inflation amount per year (e.g., 140M POLYX for Polymesh) */
+  maxInflationAmount?: number;
 }
 
 const DEFAULT_PARAMS: InflationParams = {
@@ -37,6 +39,9 @@ const ZKVERIFY_INFLATION_PARAMS = { ...DEFAULT_PARAMS, auctionAdjust: 0, maxInfl
 
 const ZKVERIFY_VOLTA_INFLATION_PARAMS = { ...DEFAULT_PARAMS, auctionAdjust: 0, maxInflation: 0.025, minInflation: 0.025, stakeTarget: 0 };
 
+// Polymesh: maxInflation 14%, stakeTarget 70%, capped at 140M POLYX per year
+const POLYMESH_INFLATION_PARAMS = { ...DEFAULT_PARAMS, maxInflation: 0.14, maxInflationAmount: 140_000_000, stakeTarget: 0.7 };
+
 const KNOWN_PARAMS: Record<string, InflationParams> = {
   [CERE_NETWORK_GENESIS]: CERE_NETWORK_INFLATION_PARAMS,
   [CERE_NETWORK_TESTNET_GENESIS]: CERE_NETWORK_INFLATION_PARAMS,
@@ -57,5 +62,6 @@ const KNOWN_PARAMS: Record<string, InflationParams> = {
 };
 
 export function getInflationParams (api: ApiPromise): InflationParams {
-  return KNOWN_PARAMS[api.genesisHash.toHex()] || DEFAULT_PARAMS;
+  // Override the default with Polymesh Defaults
+  return KNOWN_PARAMS[api.genesisHash.toHex()] || POLYMESH_INFLATION_PARAMS;
 }
