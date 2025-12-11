@@ -7,11 +7,15 @@ import type { AccountId, AccountIndex, Address } from '@polkadot/types/interface
 import { createNamedHook } from './createNamedHook.js';
 import { useApi } from './useApi.js';
 import { useCall } from './useCall.js';
+import { usePolymeshVersion } from './usePolymeshVersion.js';
 
 function useDeriveAccountInfoImpl (value?: AccountId | AccountIndex | Address | Uint8Array | string | null): DeriveAccountInfo | undefined {
   const { apiIdentity } = useApi();
+  const { isPolymesh } = usePolymeshVersion();
 
-  return useCall<DeriveAccountInfo>(apiIdentity?.derive.accounts.info, [value]);
+  // Polymesh doesn't have the standard identity pallet with subsOf, which causes errors in the derive
+  // Skip the derive call for Polymesh chains
+  return useCall<DeriveAccountInfo>(!isPolymesh && apiIdentity?.derive.accounts.info, [value]);
 }
 
 export const useDeriveAccountInfo = createNamedHook('useDeriveAccountInfo', useDeriveAccountInfoImpl);
