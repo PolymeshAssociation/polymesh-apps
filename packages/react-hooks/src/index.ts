@@ -75,6 +75,7 @@ export { useIsParasLinked, useParaEndpoints } from './useParaEndpoints.js';
 export { usePassword } from './usePassword.js';
 export { usePayWithAsset } from './usePayWithAsset.js';
 export { usePeopleEndpoint } from './usePeopleEndpoint.js';
+export { usePolymeshVersion } from './usePolymeshVersion.js';
 export { usePopupWindow } from './usePopupWindow.js';
 export { usePreimage } from './usePreimage.js';
 export { useProxies } from './useProxies.js';

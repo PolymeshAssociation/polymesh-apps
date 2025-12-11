@@ -13,7 +13,7 @@ export default function create (t: TFunction): Route {
       isHidden: false,
       needsAccounts: true,
       needsApi: [
-        'tx.balances.transferKeepAlive'
+        ['tx.balances.transferWithMemo', 'tx.balances.transferKeepAlive']
       ]
     },
     group: 'accounts',
