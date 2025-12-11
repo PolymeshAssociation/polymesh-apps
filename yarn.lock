@@ -2155,7 +2155,7 @@ __metadata:
     "@polkadot/wasm-util": "npm:^7.5.4"
     "@polkadot/x-fetch": "npm:^14.0.3"
     "@polkadot/x-ws": "npm:^14.0.3"
-    "@polymeshassociation/polymesh-types": "npm:5.7.0"
+    "@polymeshassociation/polymesh-types": "npm:7.5.0"
     "@snowfork/snowbridge-types": "npm:0.2.7"
     "@sora-substrate/type-definitions": "npm:1.27.7"
     "@subsocial/definitions": "npm:0.8.14"
@@ -2960,7 +2960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/wasm-util@npm:7.5.4, @polkadot/wasm-util@npm:^7.4.1, @polkadot/wasm-util@npm:^7.5.3, @polkadot/wasm-util@npm:^7.5.4":
+"@polkadot/wasm-util@npm:7.5.4, @polkadot/wasm-util@npm:^7.5.3, @polkadot/wasm-util@npm:^7.5.4":
   version: 7.5.4
   resolution: "@polkadot/wasm-util@npm:7.5.4"
   dependencies:
@@ -2968,6 +2968,17 @@ __metadata:
   peerDependencies:
     "@polkadot/util": "*"
   checksum: 10/4dda837f3ac84705d709a2e62fc0f9ec54518dbae88d3bf9dc68b65f17f50eadf7fff4289f3deaf51f93d79d5ac0631ecf57ad572d55f98a11149beaa3b2bcc4
+  languageName: node
+  linkType: hard
+
+"@polkadot/wasm-util@npm:^7.4.1":
+  version: 7.5.1
+  resolution: "@polkadot/wasm-util@npm:7.5.1"
+  dependencies:
+    tslib: "npm:^2.7.0"
+  peerDependencies:
+    "@polkadot/util": "*"
+  checksum: 10/7e96be99a275f6e4a68b92b6439b70aa7d80f1209031d4f7e7f7c00dee65272aabaaee43ec153c969a72a02792c2bf271e266bccd60e83e9a1450c5c5e7b06ee
   languageName: node
   linkType: hard
 
@@ -3045,10 +3056,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polymeshassociation/polymesh-types@npm:5.7.0":
-  version: 5.7.0
-  resolution: "@polymeshassociation/polymesh-types@npm:5.7.0"
-  checksum: 10/7beefbe20ceb896a739e12241af8ac02245af0bc7383b7c36bcbd019d559eae2bcc27f06034f7845989674568a7fc2cd3b16793d2cd1499cbd5cf681ac088799
+"@polymeshassociation/polymesh-types@npm:7.5.0":
+  version: 7.5.0
+  resolution: "@polymeshassociation/polymesh-types@npm:7.5.0"
+  dependencies:
+    "@polkadot/api": "npm:16.5.2"
+    "@polkadot/api-base": "npm:16.5.2"
+    "@polkadot/rpc-core": "npm:16.5.2"
+    "@polkadot/types": "npm:16.5.2"
+    "@polkadot/types-codec": "npm:16.5.2"
+  checksum: 10/a8923bc3500eaa9f2a5b2a6a0cb374511aa438c289aad91d8a25a0b981e4592b1b1ffc2f151a4841b4a0ae7c94edf9c5c8530f56e383cd221d795b728b4a2da3
   languageName: node
   linkType: hard
 
