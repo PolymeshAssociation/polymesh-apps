@@ -274,6 +274,8 @@ const spec: Record<string, OverrideBundleDefinition> = {
   'phoenix-parachain': phoenix,
   pichiu,
   'pioneer-runtime': bitcountryPioneer,
+  polymesh_ci: polymeshTestnet,
+  polymesh_dev: polymeshTestnet,
   polymesh_mainnet: polymeshMainnet,
   polymesh_testnet: polymeshTestnet,
   'pontem-node': pontem as OverrideBundleDefinition,
