@@ -11,7 +11,7 @@
   "rpc.header.live": "Live networks",
   "rpc.header.paseo.relay": "Test Paseo & parachains",
   "rpc.header.polkadot.relay": "Polkadot & parachains",
-  "rpc.header.polymesh": "Polymesh",
+  "rpc.header.polymesh": "__APP_NAME__",
   "rpc.header.rococo.relay": "Test Rococo & parachains",
   "rpc.header.test": "Test networks",
   "rpc.header.westend.relay": "Test Westend & parachains",
