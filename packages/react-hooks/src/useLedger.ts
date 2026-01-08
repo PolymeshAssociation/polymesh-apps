@@ -51,7 +51,7 @@ function retrieveLedger (api: ApiPromise): LedgerGeneric | Ledger {
 
   if (!ledger || ledgerType !== currType || currApp !== ledgerApp) {
     const genesisHex = api.genesisHash.toHex();
-    const network = ledgerChains.find((network) => knownGenesis[network].includes(genesisHex));
+    const network = 'polymesh';//ledgerChains.find((network) => knownGenesis[network].includes(genesisHex));
 
     assert(network, `Unable to find a known Ledger config for genesisHash ${genesisHex}`);
 
@@ -76,7 +76,7 @@ function retrieveLedger (api: ApiPromise): LedgerGeneric | Ledger {
 }
 
 function getState (api: ApiPromise): StateBase {
-  const hasLedgerChain = ledgerHashes.includes(api.genesisHash.toHex());
+  const hasLedgerChain = true;//ledgerHashes.includes(api.genesisHash.toHex());
   const isLedgerCapable = hasWebUsb && hasLedgerChain;
 
   return {
