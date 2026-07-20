@@ -21,24 +21,23 @@ interface Props {
   withSenders?: boolean;
 }
 
-const EMPTY_PROOF = new Uint8Array();
-
 function SessionKey ({ className = '', controllerId, onChange, stashId, withFocus, withSenders }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const [keys, setKeys] = useState<string | null>(null);
+  const [proof, setProof] = useState<string | null>(null);
 
   useEffect((): void => {
     try {
       onChange({
-        sessionTx: isHex(keys)
-          ? api?.tx.session.setKeys(keys, EMPTY_PROOF)
+        sessionTx: isHex(keys) && isHex(proof)
+          ? api?.tx.session.setKeys(keys, proof)
           : null
       });
     } catch {
       onChange({ sessionTx: null });
     }
-  }, [api?.tx.session, keys, onChange]);
+  }, [api?.tx.session, keys, onChange, proof]);
 
   return (
     <div className={className}>
@@ -48,12 +47,20 @@ function SessionKey ({ className = '', controllerId, onChange, stashId, withFocu
           stashId={stashId}
         />
       )}
-      <Modal.Columns hint={t('The hex output from author_rotateKeys, as executed on the validator node. The keys will show as pending until applied at the start of a new session.')}>
+      <Modal.Columns hint={t('The hex-encoded session keys from author_rotateKeysWithOwner, as executed on the validator node. The keys will show as pending until applied at the start of a new session.')}>
         <Input
           autoFocus={withFocus}
-          isError={!keys}
-          label={t('Keys from rotateKeys')}
+          isError={!isHex(keys)}
+          label={t('Keys from rotateKeysWithOwner')}
           onChange={setKeys}
+          placeholder='0x...'
+        />
+      </Modal.Columns>
+      <Modal.Columns hint={t('The hex-encoded ownership proof from author_rotateKeysWithOwner. It proves that the supplied session keys were generated for this stash account.')}>
+        <Input
+          isError={!isHex(proof)}
+          label={t('Owner proof from rotateKeysWithOwner')}
+          onChange={setProof}
           placeholder='0x...'
         />
       </Modal.Columns>
